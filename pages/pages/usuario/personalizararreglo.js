@@ -3,19 +3,47 @@ import Layout from '@/layout/layout'
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 
+//--> Componentes propios
+import { verFlores,verPeluches } from '@/components/mensajesNotificaciones/links';
 const PersonalizarArreglo = () => {
-  const [flor, setFlor] = useState(0)
+  const token = localStorage.getItem('token')
+  const cabecera = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  //----------------| Lista de variables peluches |----------------
+  const [peluches, setPeluches] = useState([])
+  //--> Ejecucion en segundo planos
+  useEffect(() => {
+    axios.get(verPeluches,cabecera).then(res => { setPeluches(res.data.plushies) })
+  }, [])
+
+  //----------------| Lista de variables flores |----------------
+  const [flores, setFlor] = useState([])
+  //--> Ejecucion en segundo planos
+  useEffect(() => {
+    axios.get(verFlores,cabecera).then(res => { setFlor(res.data.fleurs) })
+  }, [])
+
   const [diseño, setDiseño] = useState(0);
   const [tamaño, setTamaño] = useState(0)
   const [extra, setExtra] = useState(0)
-
+  /*
   const flores = [
     { tipo: "Girasol", valor: 10 },
     { tipo: "Rosa", valor: 12 },
     { tipo: "Gardenia", valor: 14 },
     { tipo: "Setosa", valor: 16 },
   ]
-
+  
+  const peluches = [
+    { tipo: "Oso", valor: 50 },
+    { tipo: "Jirafa", valor: 60 },
+    { tipo: "Tiburon", valor: 70 },
+    { tipo: "Panda", valor: 80 },
+  ]
+  */
   const diseños = [
     { tipo: 'Individual', valor: 1 },
     { tipo: 'San valentin', valor: 2 },
@@ -28,14 +56,7 @@ const PersonalizarArreglo = () => {
     { tipo: "Chico", valor: 10 },
     { tipo: "Mediano", valor: 15 },
     { tipo: "Grande", valor: 20 },
-  ]
-
-  const peluches = [
-    { tipo: "Oso", valor: 50 },
-    { tipo: "Jirafa", valor: 60 },
-    { tipo: "Tiburon", valor: 70 },
-    { tipo: "Panda", valor: 80 },
-  ]
+  ];
 
   return (
     <Layout
@@ -55,7 +76,7 @@ const PersonalizarArreglo = () => {
               <div className='card'>
                 <h5 className='text-center'>Barra de personalización</h5>
                 <div className='flex justify-content-between my-3'>
-                  <label htmlFor="diseño" className='flex align-items-center font-semibold'>Diseño: </label>
+                  <label htmlFor="diseño" className='flex align-items-center font-semibold'>Diseño: </label> 
                   <Dropdown
                     inputId="diseño" value={diseño} onChange={(e) => setDiseño(e.value)} placeholder='Elija  un diseño'
                     options={diseños} optionLabel="tipo" optionValue='valor' className="w-full md:w-14rem" />
@@ -85,7 +106,7 @@ const PersonalizarArreglo = () => {
                 <p className='font-bold text-2xl'>Total a pagar: ${`${diseño + tamaño + flor + extra}`}</p>
               </div>
               <div className='flex justify-content-around'>
-                {/* <Button label="Guardar" severity="info" rounded size="large" className='w-5' /> */}
+                <Button label="Guardar" severity="info" rounded size="large" className='w-5' />
                 <Button label="Pagar" severity="success" rounded size="large" className='w-5' />
               </div>
             </div>

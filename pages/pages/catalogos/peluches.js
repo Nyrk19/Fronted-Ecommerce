@@ -53,6 +53,29 @@ const CatalogoPeluches = () => {
     }
   };
 
+  const addFavoritos = async () => {
+    //--> Preparar objeto para enviar
+    const token = localStorage.getItem('token')
+    const cabecera = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    const objetoEnviar = {
+      nombreProducto: nombreProducto,
+    }
+    //--> Enviar peticion
+    try {
+      const respuesta = await axios.post(agregarFavoritos, objetoEnviar, cabecera)
+      console.log(respuesta)
+      if (respuesta.status === 200) {
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto agregado a favoritos', life: 3000 });
+      }
+    } catch (error) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo agregar a fovoritos', life: 3000 });
+    }
+  }
+
   //--> Modo de vista: lista
   const listItem = (peluche) => {
     return (
@@ -97,7 +120,8 @@ const CatalogoPeluches = () => {
 
             <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 mt-6">
               <Button label="Favoritos" icon="pi pi-heart" rounded severity="help"
-                aria-label="Favorite" className="p-button-rounded" />
+                aria-label="Favorite" className="p-button-rounded" 
+                onClick={addFavoritos}/>
               <Button label="Agregar" icon="pi pi-shopping-cart" className="p-button-rounded" severity="success"
                 disabled={peluche.statusProducto === 'Agotado'} />
               <Button label="Detalles" icon="pi pi-external-link" className="p-button-rounded"
@@ -156,7 +180,8 @@ const CatalogoPeluches = () => {
           </div>
 
           <div className="flex align-items-center justify-content-between">
-            <Button icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="" />
+            <Button icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="" 
+                onClick={addFavoritos}/>
             <Button label="Detalles" icon="pi pi-search" className=" font-light ml-2" onClick={() => dialogoPeluche(peluche)} />
             <Button
               label="Agregar" icon="pi pi-shopping-cart" className="font-light ml-2 " severity="success"

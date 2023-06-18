@@ -57,12 +57,6 @@ const CatalogoPeluches = () => {
     setSearchTerm(e.target.value);
   };
 
-  
-
-  
-
-
-
   //--> Indicar estado de la flor
   const getSeverity = (flor) => {
     switch (flor.estatus) {
@@ -79,6 +73,29 @@ const CatalogoPeluches = () => {
         return null;
     }
   };
+
+  const addFavoritos = async () => {
+    //--> Preparar objeto para enviar
+    const token = localStorage.getItem('token')
+    const cabecera = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    const objetoEnviar = {
+      nombreProducto: nombreProducto,
+    }
+    //--> Enviar peticion
+    try {
+      const respuesta = await axios.post(agregarFavoritos, objetoEnviar, cabecera)
+      console.log(respuesta)
+      if (respuesta.status === 200) {
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto agregado a favoritos', life: 3000 });
+      }
+    } catch (error) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo agregar a fovoritos', life: 3000 });
+    }
+  }
 
   //--> Modo de vista: lista
   const listItem = (flor) => {
@@ -113,7 +130,8 @@ const CatalogoPeluches = () => {
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                  Ut enim ad minim veniam, quis nostrud exercitation </p> 
               </div> 
-              <Button   label="Favoritos" icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="p-button-rounded"  />
+              <Button   label="Favoritos" icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="p-button-rounded" 
+                onClick={addFavoritos}/>
               <Button label="Agregar" icon="pi pi-shopping-cart" className="p-button-rounded" disabled={flor.estatus === 'Agotado'}></Button>
               <Button label="Detalles" icon="pi pi-external-link"className="p-button-rounded" onClick={() => onClick('displayBasic')} />
                 
@@ -153,7 +171,8 @@ const CatalogoPeluches = () => {
           </div>
           
           <div className="flex align-items-center justify-content-between  ">
-            <Button  icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="" />
+            <Button  icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="" 
+                onClick={addFavoritos}/>
             <Button label="Detalles" icon="pi pi-search" className=" font-light ml-2" onClick={() => onClick('displayBasic')} />
             <Button label="Agregar" icon="pi pi-shopping-cart" className="font-light ml-2 "disabled={flor.estatus === 'Agotado'}></Button>
            

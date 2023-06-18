@@ -5,57 +5,25 @@ import { useRouter } from 'next/router';
 import { Button } from 'primereact/button';
 import 'primeicons/primeicons.css';
 import { Divider } from 'primereact/divider';
+
+//--> Componentes propios
+import { visualizarPedidos } from '@/components/mensajesNotificaciones/links';
+
 const MisCompras = () => {
 
   const router = useRouter();
   const [Ordenes, setOrden] = useState([])
 
-  useEffect(() => {
-    const datosOrden = [
-      {
-        Npedido: "1234", precio: 5.90, fecha:"10/10/2002", fechaEntrega: "03/06/2023", estado: "Entregado",
-        productos: [
-          {nombre: "Rosa",
-          cantidad:"1",
-          total:"$11",
-          imagen:"https://minisomx.vtexassets.com/arquivos/ids/218097/Peluche-Miniso-Unicornio-Felpa-Rosa-16x28-cm-1-12948.jpg?v=637952098028100000"},
-         
-        ],
-       
-        
-      },
-      {
-        Npedido: "5678", precio: 6.20, fecha:"26/07/2002",fechaEntrega: "03/06/2023",
-        productos: [
-          {nombre: "Rosa",
-          cantidad:"1",
-          total:"$11",
-          imagen:"https://media.admagazine.com/photos/61eb22cb9b19d943aa117b30/master/w_1600%2Cc_limit/Girasol.jpg"},
-          {nombre: "Tulipan",
-          cantidad:"4",
-          total:"$15",
-          imagen:"https://m.media-amazon.com/images/I/41dFyXgb9sL._SL500_.jpg"},
-          
-        ]
-        
-      },
-      {
-        Npedido: "161718", precio: 78.60,fecha:"10/10/2002",fechaEntrega: "03/06/2023",
-        productos: [
-          {nombre: "Rosa",
-          cantidad:"1",
-          total:"$11",
-          imagen:"https://http2.mlstatic.com/D_NQ_NP_2X_778361-MLM69281757162_052023-F.webp"}
-        ]
-  
+  const token = localStorage.getItem('token')
+    const cabecera = {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    ]
-    setOrden(datosOrden)
-  }, [])
-
-
-
-  const productoTemplate = (producto) => (
+    }
+    useEffect(() => {
+      axios.get(visualizarPedidos,cabecera).then(res => { setOrden(res.data.pedidosCliente) })
+    }, [])
+    const productoTemplate = (producto) => (
     <div className="col-12">
 
     <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 ">

@@ -7,15 +7,29 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
-import { mostrarFlores } from "@/components/mensajesNotificaciones/links";
+import { agregarFavoritos, mostrarFlores, visualizarVC } from "@/components/mensajesNotificaciones/links";
 // import { Rating } from 'primereact/rating';
 // --> Libreria de cloudinary
 import { Image } from 'cloudinary-react'
 
+
+
 const CatalogoFlores = () => {
   //----------------| Lista de variables |----------------
   const [flores, setFlores] = useState([])
+  const [VyC, setVyC] = useState([])
   const [layout, setLayout] = useState('grid');
+
+  const cabecera = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  
+  const objetoEnviar = {
+    nombreProducto: nombreProducto,
+  }
+
   //-->Detalles de flor
   const [detallesFlor, setDetallesFlor] = useState({
     nombreProducto: '',
@@ -32,6 +46,9 @@ const CatalogoFlores = () => {
   //--> Ejecucion en segundo planos
   useEffect(() => {
     axios.get(mostrarFlores).then(res => { setFlores(res.data.fleurs) })
+  }, [])
+  useEffect(() => {
+    axios.get(visualizarVC, objetoEnviar, cabecera).then(res => { setVyC(res.data) })
   }, [])
 
   //--> Indicar estado de la flor
@@ -50,6 +67,29 @@ const CatalogoFlores = () => {
         return null;
     }
   };
+
+  const addFavoritos = async () => {
+    //--> Preparar objeto para enviar
+    const token = localStorage.getItem('token')
+    const cabecera = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    const objetoEnviar = {
+      nombreProducto: nombreProducto,
+    }
+    //--> Enviar peticion
+    try {
+      const respuesta = await axios.post(agregarFavoritos, objetoEnviar, cabecera)
+      console.log(respuesta)
+      if (respuesta.status === 200) {
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Producto agregado a favoritos', life: 3000 });
+      }
+    } catch (error) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo agregar a fovoritos', life: 3000 });
+    }
+  }
 
   //--> Modo de vista: lista
   const listItem = (flor) => {
@@ -96,7 +136,8 @@ const CatalogoFlores = () => {
 
             <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 mt-6">
               <Button label="Favoritos" icon="pi pi-heart" rounded severity="help"
-                aria-label="Favorite" className="p-button-rounded" />
+                aria-label="Favorite" className="p-button-rounded" 
+                onClick={addFavoritos}/>
               <Button label="Agregar" icon="pi pi-shopping-cart" className="p-button-rounded" severity="success"
                 disabled={flor.statusProducto === 'Agotado'} />
               <Button label="Detalles" icon="pi pi-external-link" className="p-button-rounded"
@@ -153,7 +194,8 @@ const CatalogoFlores = () => {
           </div>
 
           <div className="flex align-items-center justify-content-between">
-            <Button icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="" />
+            <Button icon="pi pi-heart" rounded severity="help" aria-label="Favorite" className="" 
+                onClick={addFavoritos}/>
             <Button label="Detalles" icon="pi pi-search" className=" font-light ml-2" onClick={() => dialogoFlor(flor)} />
             <Button
               label="Agregar" icon="pi pi-shopping-cart" className="font-light ml-2" severity="success"

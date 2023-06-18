@@ -9,9 +9,26 @@ import { Dialog } from 'primereact/dialog';
 
 import { useRouter } from 'next/router';
 
+//--> Componentes propios
+import { mostrarFlores,verFavoritos } from '@/components/mensajesNotificaciones/links';
+
 const Favoritos = () => {
   const router = useRouter();
-  const [flores, setFlores] = useState([]);
+
+  const token = localStorage.getItem('token')
+  const cabecera = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+  //----------------| Lista de variables flores |----------------
+  const [flores, setFlores] = useState([])
+  //--> Ejecucion en segundo planos
+  useEffect(() => {
+    axios.get(verFavoritos,cabecera).then(res => { setFlores(res.data.fleurs) })
+  }, [])
+  
   const [selectedFlor, setSelectedFlor] = useState(null);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [eliminarExitoso, setEliminarExitoso] = useState(false);

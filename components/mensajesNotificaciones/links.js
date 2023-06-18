@@ -18,3 +18,16 @@ export const mostrarPeluches = "http://localhost:4000/api/productos/mostrarPeluc
 
 // --> Cambiar nombre
 export const modificarNombre = "http://localhost:4000/api/cliente/modificar/username"
+
+// --> Interaccion con productos
+export const agregarFavoritos = "http://localhost:4000/api/productos/agregarFavoritos"
+export const verFavoritos = "http://localhost:4000/api/productos/verFavoritos"
+export const visualizarVC = "http://localhost:4000/api/cliente/interaccionPro/visualizarVC"
+// --> Personalizar producto
+export const verPeluches = "http://localhost:4000/api/productos/verPeluches"
+export const verFlores = "http://localhost:4000/api/productos/verFlores"
+
+// --> Interaccion con pedidos
+export const verTarjetas = "http://localhost:4000/api/productos/verTarjetas"
+export const verDirecciones = "http://localhost:4000/api/productos/verDirecciones"
+export const visualizarPedidos = "http://localhost:4000/api/productos/visualizar"
